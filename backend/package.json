@@ -2,12 +2,11 @@
   "name": "virtual_platform_backend",
   "version": "1.0.0",
   "description": "a real-time virtual events platform with features including live streaming, interactive chat, Q&A sessions, breakout rooms, and user profile management",
-  "type": "module",
-  "main": "src/index.js",
+  "type": "",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js" ,
-    "dev": "nodemon src/index.js"
+    "start": "node ./src/bin/www",
+    "dev": "nodemon ./src/bin/www"
   },
   "keywords": [
     "nodejs",
@@ -22,7 +21,10 @@
     "prettier": "^3.3.2"
   },
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "express": "^4.19.2",
-    "mongoose": "^8.4.3"
+    "mongoose": "^8.4.3",
+    "morgan": "^1.10.0",
+    "path": "^0.12.7"
   }
 }
