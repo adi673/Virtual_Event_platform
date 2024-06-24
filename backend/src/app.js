@@ -2,21 +2,30 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const connectDB = require('./db/mongoose');
+const morgan = require('morgan');
+const path = require('path');
 const authMiddleware = require('./middlewares/authMiddleware');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 connectDB();
+
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
+app.use(morgan('dev'));
+app.use(cors());
 
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
+const profileRoutes = require('./routes/profileRoutes');
+
 app.use('/api/auth', authRoutes);
-app.get('/', (req, res) => {
+app.use('/api', profileRoutes);
+app.get('/posts', (req, res) => {
     res.send('Hello World');
 });
 

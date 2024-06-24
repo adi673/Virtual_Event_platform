@@ -22,16 +22,30 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        default: 'user',
+        default: 'user'
     },
     created_at: {
         type: Date,
-        default: Date.now,
+        default: Date.now
     },
     updated_at: {
         type: Date,
-        default: Date.now,
+        default: Date.now
     },
+    profile_picture: {
+        type: String
+    },
+    bio: {
+        type: String
+    },
+    social_links: {
+        type: Map,
+        of: String
+    },
+    is_private: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const User = mongoose.model('User', userSchema);

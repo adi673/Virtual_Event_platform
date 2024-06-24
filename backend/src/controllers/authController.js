@@ -7,12 +7,12 @@ const { generateToken } = require('../utils/jwtUtils');
 // Register a new user
 exports.register = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log("Register")
     try {
         // Check if the user already exists
         let user = await User.findOne({ email });
         if (user) {
-            return res.status(400).json({ message: 'Email already exists' });
+            return res.status(400).json({ success: false, message: 'Email already exists' });
         }
         let username=email;
         // Create new user
@@ -28,39 +28,39 @@ exports.register = async (req, res) => {
         const token = generateToken(user);
 
         res.cookie('token', token, { httpOnly: true });
-        res.status(201).json({ message: 'User registered', token });
+        res.status(201).json({ success: true, message: 'User registered', token });
     } catch (err) {
         console.error(err.message);
         console.log("Authcotroller")
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ success: false, error: 'Server error' });
     }
 };
 
 // Login user
 exports.login = async (req, res) => {
     const { email, password } = req.body;
-
+    console.log("Login")
     try {
         // Check if the user exists
         let user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ success: false, message: 'User not found' });
         }
 
         // Validate password
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
+            return res.status(400).json({ success: false, message: 'Invalid credentials' });
         }
 
         // Generate JWT token
         const token = generateToken(user);
 
         res.cookie('token', token, { httpOnly: true });
-        res.json({ message: 'User logged in', token });
+        res.json({ success: true, message: 'User logged in', token });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ success: false, error: 'Server error' });
     }
 };
 
