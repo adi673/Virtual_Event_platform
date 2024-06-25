@@ -1,18 +1,25 @@
 const User = require('../models/userModel');
-
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 exports.getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.user_id).select('-password_hash');
+        const userId = req.user.id;
+        const user = await User.findOne({ user_id: userId }).select('-password');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
         res.json(user);
     } catch (err) {
-        res.status(500).send('Server error');
+        res.status(500).send('Server error'+ err.message);
     }
 };
 
 exports.updateProfile = async (req, res) => {
     const { username, bio, profile_picture, social_links, is_private } = req.body;
     try {
-        let user = await User.findById(req.user.user_id);
+        const userId = req.user.id;
+        let user = await User.findOne({ user_id: userId }).select('-password');
+        
         if (!user) {
             return res.status(404).json({ success: false, msg: 'User not found' });
         }
@@ -32,18 +39,19 @@ exports.updateProfile = async (req, res) => {
 };
 
 exports.changePassword = async (req, res) => {
-    const { currentPassword, newPassword } = req.body;
+    let { currentPassword, newPassword } = req.body;
     try {
-        let user = await User.findById(req.user.user_id);
+        const userId = req.user.id;
+        let user = await User.findOne({ user_id: userId });
         if (!user || !user.comparePassword(currentPassword)) {
             return res.status(400).json({ success: false, msg: 'Invalid current password' });
         }
 
-        user.password_hash = bcrypt.hashSync(newPassword, 10);
+        user.password = bcrypt.hashSync(newPassword, 10);
         user.updated_at = Date.now();
         await user.save();
         res.json({ success: true, msg: 'Password updated successfully' });
     } catch (err) {
-        res.status(500).send('Server error');
+        res.status(500).send('Server error'+ err.message);
     }
 };

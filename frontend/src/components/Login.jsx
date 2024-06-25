@@ -14,8 +14,9 @@ const Login = ({ setToken }) => {
       });
       setToken(response.data.token);
       seetToken(response.data.token)
+      localStorage.setItem('token', token);
       console.log(response.data);
-      window.location.href = '/profile'; // Redirect using window.location
+      
     } catch (error) {
       console.error(error.response.data);
     }
