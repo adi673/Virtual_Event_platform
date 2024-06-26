@@ -1,20 +1,17 @@
 const express = require('express');
-const { createTeam, getTeams, addMember } = require('../controllers/teamController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const router = express.Router();
-const teamController = require('../controllers/teamController');
-const { createTeam, addModerator, generateJoinLink } = require('../controllers/teamController');
+const { getTeams, createTeam, addModerator, addMultipleMembers, joinTeam, generateJoinLink, joinChatRoom } = require('../controllers/teamController');
 
-router.post('/create', authMiddleware, createTeam);
 router.get('/', authMiddleware, getTeams);
+router.post('/create', authMiddleware, createTeam);
 router.post('/add-member', authMiddleware, addMember);
 router.post('/addModerator', authMiddleware, addModerator);
-router.post('/generateJoinLink', authMiddleware, generateJoinLink);
+router.post('/addMultipleMembers', authMiddleware, addMultipleMembers);
+router.put('/joinTeam/:teamId', authMiddleware, joinTeam);
 
-// Route to join a team using team ID
-router.put('/join/:teamId', authMiddleware, teamController.joinTeam);
-
-// Route to get all teams a user is part of
-router.get('/user-teams', authMiddleware, teamController.getUserTeams);
+//left to work on this route work on the following routes while woring on chat room and fix their postion in respective files
+router.get('/generateJoinLink', authMiddleware, generateJoinLink);
+router.post('/joinChatRoom/:roomId', authMiddleware, joinChatRoom);
 
 module.exports = router;

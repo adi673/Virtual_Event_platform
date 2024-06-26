@@ -32,4 +32,5 @@ const chatRoomSchema = new mongoose.Schema({
     // Add more fields as per your requirements
 });
 
-module.exports = mongoose.model('ChatRoom', chatRoomSchema);
+const chatRoom = mongoose.model('ChatRoom', chatRoomSchema);
+module.exports = chatRoom;
