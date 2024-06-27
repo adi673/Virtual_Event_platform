@@ -5,7 +5,7 @@ const { getTeams, createTeam, addModerator, addMultipleMembers, joinTeam, genera
 
 router.get('/', authMiddleware, getTeams);
 router.post('/create', authMiddleware, createTeam);
-router.post('/add-member', authMiddleware, addMember);
+// router.post('/add-member', authMiddleware, addMember);
 router.post('/addModerator', authMiddleware, addModerator);
 router.post('/addMultipleMembers', authMiddleware, addMultipleMembers);
 router.put('/joinTeam/:teamId', authMiddleware, joinTeam);
