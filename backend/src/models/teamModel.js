@@ -41,7 +41,7 @@ const teamSchema = new mongoose.Schema({
         },
         role: {
             type: String,
-            enum: ['owner', 'moderator', 'member'],
+            enum: ['owner', 'admin', 'moderator', 'member'],
             default: 'member',
         },
     },],

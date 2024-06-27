@@ -15,30 +15,43 @@ exports.createTeam = async (req, res) => {
     const { name, description, members } = req.body;
   
     try {
-        // Check if a team with the same name already exists
         const existingTeam = await Team.findOne({ name });
         if (existingTeam) {
             return res.status(400).json({ success: false, message: 'Team with this name already exists' });
         }
   
-        // Create a new team
         const newTeam = new Team({
             name,
             description,
-            owner: req.user.id, // Assuming req.user contains the authenticated user
-            members: [{ userId: req.user.id, role: 'owner' }, ...members],  //remove this ...members when u r not adding any members while creating new team
+            owner: req.user.id,
+            members: [{ userId: req.user.id, role: 'owner' }, ...members],
+        });
+
+        // Create default Announcement and General chat rooms
+        const announcementRoom = new ChatRoom({
+            name: 'Announcement',
+            team: newTeam._id,
+            type: 'Announcement',
+            members: newTeam.members
+        });
+
+        const generalRoom = new ChatRoom({
+            name: 'General',
+            team: newTeam._id,
+            type: 'General',
+            members: newTeam.members
         });
   
-        // Save the team to the database
-        await newTeam.save();
+        await announcementRoom.save();
+        await generalRoom.save();
   
-        // Send response
-        res.status(201).json({ success: true ,Team : newTeam});
+        res.status(201).json({ success: true, Team: newTeam, Announcement_Room: announcementRoom, General_room: generalRoom });
     } catch (error) {
         console.error('Error creating team:', error);
         res.status(500).json({ success: false, message: 'Server error' });
     }
 };
+
 
 exports.addModerator = async (req, res) => {
     try {
@@ -49,23 +62,16 @@ exports.addModerator = async (req, res) => {
             return res.status(404).json({ success: false, message: 'Team not found' });
         }
 
-        // Check if the requesting user is the owner or a moderator
         const requestingUser = team.members.find(member => member.userId.toString() === req.user.id);
-        if (!requestingUser || (requestingUser.role !== 'owner' && requestingUser.role !== 'moderator')) {
+        if (!requestingUser || (requestingUser.role !== 'owner' && requestingUser.role !== 'admin')) {
             return res.status(403).json({ success: false, message: 'Permission denied' });
         }
 
-        // Check if the user to be added as a moderator is already a member
         const userToBeUpdated = team.members.find(member => member.userId.toString() === userId);
         if (!userToBeUpdated) {
             return res.status(404).json({ success: false, message: 'User not found in the team' });
         }
 
-        // if (team.owner.toString() !== req.user.id) {
-        //     return res.status(403).json({ success: false, message: 'Unauthorized' });
-        // }
-
-        // Check if the user is already a moderator
         if (userToBeUpdated.role === 'moderator') {
             return res.status(400).json({ success: false, message: 'User already a moderator' });
         }
@@ -81,41 +87,32 @@ exports.addModerator = async (req, res) => {
 
 //add this in route left it 
 exports.addMultipleMembers = async (req, res) => {
-    //   const { teamId } = req.params;
-    //   const { membersToAdd } = req.body;
     const { teamId, membersToAdd } = req.body;
 
     try {
-        // Find the team by ID
         const team = await Team.findById(teamId);
         if (!team) {
             return res.status(404).json({ success: false, message: 'Team not found' });
         }
 
-        // Check if the requesting user is the owner or a moderator
+        //learn how this query works?
         const requestingUser = team.members.find(member => member.userId.toString() === req.user.id);
-        if (!requestingUser || (requestingUser.role !== 'owner' && requestingUser.role !== 'moderator')) {
+        if (!requestingUser || (requestingUser.role !== 'owner' && requestingUser.role !== 'admin')) {
             return res.status(403).json({ success: false, message: 'Permission denied' });
         }
 
-        // Add each member to the team
         membersToAdd.forEach(member => {
-            // Check if the member already exists in the team
             const existingMember = team.members.find(m => m.userId.toString() === member.userId);
             if (existingMember) {
-                // Update the existing member's role if needed
-                existingMember.role = member.role || existingMember.role; // Update role if provided
+                existingMember.role = member.role || existingMember.role;
             } else {
-                // Add new member to the team
                 team.members.push({ userId: member.userId, role: member.role || 'member' });
             }
         });
 
-        // Save the updated team
         await team.save();
 
-        // Send success response
-        res.status(200).json({ success: true, message: 'Members added successfully', team });
+        res.status(200).json({ success: true, message: 'Members added successfully', Team: team });
 
     } catch (error) {
         console.error('Error adding members to team:', error);
@@ -145,7 +142,7 @@ exports.joinTeam = async (req, res) => {
         team.members.push({ userId: userId, role: 'member' }); // Assuming role defaults to 'member'
         await team.save();
   
-        res.json({ success: true, message: 'Joined team successfully', team });
+        res.json({ success: true, message: 'Joined team successfully', Team: team });
     } catch (err) {
         console.error('Error joining team:', err);
         res.status(500).json({ success: false, message: 'Server error' });
@@ -212,7 +209,7 @@ exports.joinChatRoom = async (req, res) => {
 
     // Optionally, update user's session or perform other necessary operations
 
-    res.status(200).json({ success: true, message: 'Joined chat room successfully', chatRoom });
+    res.status(200).json({ success: true, message: 'Joined chat room successfully', ChatRoom: chatRoom });
   } catch (error) {
     console.error('Error joining chat room:', error);
     res.status(500).json({ success: false, message: 'Server Error' });

@@ -9,6 +9,8 @@ router.post('/send', authMiddleware, sendMessage);
 router.get('/:teamId', authMiddleware, getMessages);
 router.post('/create', authMiddleware, createChatRoom);
 router.post('/addMember', authMiddleware, addMemberToChatRoom);
+
+//duplicate code fixed in messageController.js and routes in messageRoutes.js
 router.post('/messages/create', authMiddleware, createMessage);
 router.delete('/messages/:messageId', authMiddleware, deleteMessage);
 

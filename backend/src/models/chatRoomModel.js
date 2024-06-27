@@ -10,9 +10,16 @@ const chatRoomSchema = new mongoose.Schema({
 
     team: { 
         type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Team', required: true 
-    
+        ref: 'Team', 
+        required: true 
     },
+
+    type: { 
+        type: String, 
+        enum: ['Announcement', 'General'], 
+        default: 'General'
+    },
+    
     moderators: [{ 
         type: mongoose.Schema.Types.ObjectId, 
         ref: 'User' 

@@ -3,6 +3,8 @@ const Team = require('../models/teamModel');
 const ChatRoom = require('../models/chatRoomModel');
 const Message = require('../models/messageModel');
 
+const socketUtils = require('../utils/socketUtils'); // Assuming you have socket utility functions
+
 exports.createChatRoom = async (req, res) => {
     try {
         const { name, teamId } = req.body;
@@ -37,6 +39,7 @@ exports.addMemberToChatRoom = async (req, res) => {
     }
 };
 
+// left to fix below . duplicate code fixed code in messageController.js
 exports.deleteMessage = async (req, res) => {
     try {
         const { messageId } = req.params;
