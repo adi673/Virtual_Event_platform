@@ -28,4 +28,5 @@ const messageSchema = new mongoose.Schema({
     // Add more fields as per your requirements
 });
 
-module.exports = mongoose.model('Message', messageSchema);
+const Message = mongoose.model('Message', messageSchema);
+module.exports = Message;

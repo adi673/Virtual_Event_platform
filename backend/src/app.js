@@ -28,8 +28,9 @@ const eventRoutes = require('./routes/eventRoutes');
 
 
 app.use('/api/auth', authRoutes);
-app.use('/api', profileRoutes);
-app.use('/api', teamRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/teams', teamRoutes);
+app.use('/api/message', messageRoutes);
 app.use('/api', chatRoutes);
 app.use('/api', eventRoutes);
 
