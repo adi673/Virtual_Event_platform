@@ -32,7 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/message', messageRoutes);
-app.use('/api', chatRoutes);
+app.use('/api/', chatRoutes);
 app.use('/api', eventRoutes);
 
 
