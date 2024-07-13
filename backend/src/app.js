@@ -37,7 +37,7 @@ app.use('/api', eventRoutes);
 
 
 
-app.get('/posts', (req, res) => {
+app.get('/posts ', (req, res) => {
     res.send('Hello World');
 });
 
