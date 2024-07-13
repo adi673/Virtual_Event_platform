@@ -8,6 +8,7 @@ const Login = ({ setToken }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
+      console.log(email)
       const response = await axios.post('http://localhost:3000/api/auth/login', {
         email,
         password
@@ -15,6 +16,7 @@ const Login = ({ setToken }) => {
       setToken(response.data.token);
       seetToken(response.data.token)
       localStorage.setItem('token', token);
+      
       console.log(response.data);
       
     } catch (error) {
@@ -34,7 +36,7 @@ const Login = ({ setToken }) => {
         <label>Password:</label>
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
-      <button type="submit">Login</button>
+      <button type="submit" onClick={(handleLogin)}>Login</button>
       {token}
     </form>
   );
