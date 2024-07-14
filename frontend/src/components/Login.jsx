@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import { useState,useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "../hooks/AuthContext";
 
 const Login = ({ setToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [token, seetToken] = useState('');
+  const { updateToken } =useContext(AuthContext); 
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -13,12 +16,16 @@ const Login = ({ setToken }) => {
         email,
         password
       });
-      setToken(response.data.token);
-      seetToken(response.data.token)
-      localStorage.setItem('token', token);
-      
-      console.log(response.data);
-      
+
+      if (response.data) {
+        console.log("login : ",response.data)
+        console.log("Res.token : ",response.data.token)
+        updateToken(response.data.token);
+        localStorage.setItem("site", response.token);
+        navigate("/dashboard");
+        return;
+      }
+      throw new Error(res.message);
     } catch (error) {
       console.error(error.response.data);
     }
@@ -37,7 +44,7 @@ const Login = ({ setToken }) => {
         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
       </div>
       <button type="submit" onClick={(handleLogin)}>Login</button>
-      {token}
+      
     </form>
   );
 };
