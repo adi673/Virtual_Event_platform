@@ -34,7 +34,8 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     },
     profile_picture: {
-        type: String
+        type: String,
+        default: 'https://www.gravatar.com/avatar/'
     },
     bio: {
         type: String

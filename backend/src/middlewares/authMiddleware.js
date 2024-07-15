@@ -1,7 +1,17 @@
 const { verifyToken } = require('../utils/jwtUtils');
 
 const authMiddleware = (req, res, next) => {
-    const token = req.cookies.token;
+    var token = req.cookies.token;
+    //fix this not gettting token from cookies
+    
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.status(401).json({ message: 'Authorization header is missing' });
+    }
+    token = authHeader.split(' ')[1]; // Bearer <token>
+    
+    
+    console.log(token)
     if (!token) {
         return res.status(401).json({ success: false, message: 'No token, authorization denied' });
     }

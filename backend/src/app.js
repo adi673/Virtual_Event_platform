@@ -29,7 +29,7 @@ const messageRoutes = require('./routes/messageRoutes');
 
 
 app.use('/api/auth', authRoutes);
-app.use('/api/profile', profileRoutes);
+app.use('/api/dashboard', profileRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/message', messageRoutes);
 app.use('/api/', chatRoutes);
