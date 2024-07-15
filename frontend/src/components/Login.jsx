@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../hooks/AuthContext";
 
-const Login = ({ setToken }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { updateToken } =useContext(AuthContext); 
@@ -12,7 +12,7 @@ const Login = ({ setToken }) => {
     e.preventDefault();
     try {
       console.log(email)
-      const response = await axios.post('http://localhost:3000/api/auth/login', {
+      const response = await axios.post('http://localhost:3001/api/auth/login', {
         email,
         password
       });
